@@ -216,3 +216,5 @@ patient_patientID	Refers to the unique identifier for a patient.	int	1-3		PK
 
 
 
+SQL Queries: 
+
