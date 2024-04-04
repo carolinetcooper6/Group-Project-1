@@ -3,7 +3,8 @@ Group 1:
 Group Members: 
 Caroline 
 Gwen --> https://github.com/gaw63800/GroupProjectMIST4610-Group1![image](https://github.com/carolinetcooper6/Group-Project-1/assets/165078010/bba2c5ca-bb78-4a92-b2b6-61b249d05327)
-Charlie --> 
+Charlie --> https://github.com/charles8888/Project-1 ![image](https://github.com/carolinetcooper6/Group-Project-1/assets/165078010/ebcc4367-dcdc-401e-949c-23b1ea738bd8)
+
 Hubah --> https://github.com/hubahakhtar/Project1![image](https://github.com/carolinetcooper6/Group-Project-1/assets/165078010/e9709fb9-159d-4fdc-9282-5dc09c61e32e)
 
 Kishen --> https://github.com/supersomeone03/Project-1![image](https://github.com/carolinetcooper6/Group-Project-1/assets/165078010/295edf8e-2770-4e3a-935a-ad0efadba154)
