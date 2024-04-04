@@ -2,10 +2,12 @@
 Group 1: 
 Group Members: 
 Caroline 
-Gwen
-Charlie
-Hubah 
-Kishen
+Gwen --> https://github.com/gaw63800/GroupProjectMIST4610-Group1![image](https://github.com/carolinetcooper6/Group-Project-1/assets/165078010/bba2c5ca-bb78-4a92-b2b6-61b249d05327)
+Charlie --> 
+Hubah --> https://github.com/hubahakhtar/Project1![image](https://github.com/carolinetcooper6/Group-Project-1/assets/165078010/e9709fb9-159d-4fdc-9282-5dc09c61e32e)
+
+Kishen --> https://github.com/supersomeone03/Project-1![image](https://github.com/carolinetcooper6/Group-Project-1/assets/165078010/295edf8e-2770-4e3a-935a-ad0efadba154)
+
 
 Problem Description: 
 Pretend you are the owner/operator of an emergency healthcare clinic needing to build a relational database. You hired some students from the MIST 4610 class at the University of Georgia to create the database for you. They need to know more about your organization to identify which entities, attributes, and relationships are important for you. Start by describing your business as a real client!
@@ -217,4 +219,127 @@ patient_patientID	Refers to the unique identifier for a patient.	int	1-3		PK
 
 
 SQL Queries: 
+4 Simple Queries:
+
+#1 Select the name and DOB for all patients born in 1999
+
+SELECT patient_Name, `date of birth` 
+FROM patient
+WHERE `date of birth` regexp "1999";
+ 
+![image](https://github.com/carolinetcooper6/Group-Project-1/assets/165078010/7d154fba-6b84-41eb-9e33-563152b20adf)
+
+#2 Show the name of patient and show their invoice number and amount due
+
+SELECT patient_Name, Invoice_InvoiceNum, Charge
+FROM patient
+JOIN patient_has_Invoice ON patient_has_Invoice.patient_patientID = patient.patientID;
+ 
+![image](https://github.com/carolinetcooper6/Group-Project-1/assets/165078010/87a7325a-d665-432f-a081-8ce89ba3a43b)
+
+#3 Display all existing appointments along with the date and name of patient
+
+SELECT patient_Name, appointmentID, Date
+FROM patient
+JOIN Appointment ON Appointment.patient_patientID= patient.patientID;
+
+ ![image](https://github.com/carolinetcooper6/Group-Project-1/assets/165078010/6a13ed8f-2265-483f-851a-6becad0ef241)
+
+ #4 Display all appointments for a particular staff member
+
+SELECT staffID, staffName, staff_schedule,appointmentID, Date
+FROM Staff
+JOIN Appointment ON Appointment.Staff_staffID = Staff.staffID
+WHERE staffID = "1552";
+ 
+![image](https://github.com/carolinetcooper6/Group-Project-1/assets/165078010/8a50805f-ba58-4523-8887-3b9d076db28f)
+
+6 Complex Queries:
+#1 Display the patient name, DOB, and their review number and review description
+
+SELECT p.`date of birth`,p.patient_Name, r.reviewNum, r.Desc
+FROM patient p
+JOIN Review r ON p.patientID = r.patient_patientID;
+ 
+![image](https://github.com/carolinetcooper6/Group-Project-1/assets/165078010/2a6c7311-c0bb-403c-a920-1206c5824fe5)
+
+#2 Find all appointments scheduled for 2027-10-21 along with the patient's name and the staff assigned to each appointment.
+
+SELECT a.appointmentID, a.Date, p.patient_Name, s.staffName
+FROM Appointment a
+JOIN patient p ON a.patient_patientID = p.patientID
+JOIN Staff s ON a.Staff_staffID = s.staffID
+WHERE DATE(a.Date) ='2027-10-21';
+ 
+![image](https://github.com/carolinetcooper6/Group-Project-1/assets/165078010/3cc0d5a3-3097-4d41-8844-3a1be3ec0de6)
+
+#3 Evaluate staff performance based on the number of appointments attended and the corresponding average patient reviews.
+
+SELECT s.staffID, s.staffName,  
+COUNT(a.appointmentID) AS num_appointments_attended, 
+AVG(r.Rating) AS average_review_rating
+FROM Staff s
+JOIN Appointment a ON s.staffID = a.Staff_staffID
+JOIN Procedures pr ON a.appointmentID = pr.Appointment_appointmentID
+JOIN patient p ON p.patientID = a.patient_patientID
+JOIN Review r ON r.patient_patientID = p.patientID
+GROUP BY s.StaffID, s.StaffName;
+ 
+![image](https://github.com/carolinetcooper6/Group-Project-1/assets/165078010/9be46af7-9e28-4ea7-97be-fde83292ddbf)
+
+
+#4 Retrieve all appointments scheduled for Cesaro Troake along with their emergency contact details. 
+
+SELECT a.appointmentID, a.Date, e.EC_Phone, e.EC_Address, p.patient_Name
+FROM Appointment a
+JOIN patient p ON a.patient_patientID = p.patientID
+JOIN Emergency_Contact e ON p.patientID = e.patient_patientID
+WHERE p.patient_Name = 'Cesaro Troake’;
+ 
+![image](https://github.com/carolinetcooper6/Group-Project-1/assets/165078010/b87a3ad2-5716-4e4c-ac9b-6259e5ce88ad)
+
+
+#5 Determine the average number of appointments per staff member over a given period, and display those exceeding the average in descending order
+
+SELECT 
+    Staff.staffID, 
+    Staff.staffName, 
+    COUNT(Appointment.appointmentID) AS NumberOfAppointments
+FROM Staff
+JOIN Appointment ON Staff.staffID = Appointment.Staff_staffID
+WHERE Appointment.Date BETWEEN '2025-08-25' AND '2027-11-03'
+GROUP BY Staff.staffID, Staff.staffName
+HAVING 
+    COUNT(Appointment.appointmentID) > (
+        SELECT (AVG(AppointmentCounts.NumberOfAppointments) - 0.1) -- Slight adjustment for precision
+        FROM (
+            SELECT COUNT(Appointment.appointmentID) AS NumberOfAppointments
+            FROM Appointment
+            WHERE Appointment.Date BETWEEN '2025-08-25' AND '2027-11-03'
+            GROUP BY Appointment.Staff_staffID
+        ) AS AppointmentCounts
+    )
+ORDER BY NumberOfAppointments DESC;
+
+ 
+![image](https://github.com/carolinetcooper6/Group-Project-1/assets/165078010/381c3eb0-4119-4cfa-bd71-5da65a3da5d2)
+ 
+
+#6 Identify patients with the largest balance due on their invoices with a balance exceeding $10,000. Order the balances due in descending order and display the total average balance due.
+
+SELECT 
+    patient.patientID,
+    patient.patient_Name,
+    Invoice.InvoiceNum,
+    SUM(Invoice.Balence_Due) AS TotalBalanceDue,
+    (SELECT AVG(Balence_Due) FROM Invoice) AS TotalAverageBalanceDue
+FROM patient
+JOIN patient_has_Invoice ON patient.patientID = patient_has_Invoice.patient_patientID
+JOIN Invoice ON patient_has_Invoice.Invoice_InvoiceNum = Invoice.InvoiceNum
+GROUP BY patient.patientID, patient.patient_Name, Invoice.InvoiceNum
+HAVING SUM(Invoice.Balence_Due) > 10000
+ORDER BY TotalBalanceDue DESC;
+
+ 
+![image](https://github.com/carolinetcooper6/Group-Project-1/assets/165078010/64f9be0c-cb14-4f6c-911b-e3355398da8a)
 
